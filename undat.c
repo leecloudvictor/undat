@@ -11,6 +11,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include "sha2.h"
+
+
+
+
 
 int
 main (int argc, char *argv[])
@@ -21,7 +26,7 @@ main (int argc, char *argv[])
 
   u8 *data;
   u8 dat_key[0x20], dat_iv[0x10];
-  u8 digest[20];
+  u8 digest[0x20];
 
   if (argc != 3)
     fail ("usage: undat index.dat version.txt");
@@ -49,10 +54,10 @@ main (int argc, char *argv[])
     fail ("unable to load dat-iv.");
 
   aes256cbc (dat_key, dat_iv, data, len, data);
-  sha1 (data + 32, len - 32, digest);
+  sha2 (data + 32, len - 32, digest, 0);
 
-  if (memcmp (data, digest, 20) != 0)
-    fail ("SHA1 mac mismatch");
+  if (memcmp (data, digest, 0x20) != 0)
+    fail ("SHA2 mac mismatch");
 
   memcpy_to_file (argv[2], data + 32, len - 32);
 
