@@ -20,7 +20,7 @@ main (int argc, char *argv[])
   size_t len;
 
   u8 *data;
-  u8 dat_key[0x10], dat_iv[0x10];
+  u8 dat_key[0x20], dat_iv[0x10];
   u8 digest[20];
 
   if (argc != 3)
@@ -43,12 +43,12 @@ main (int argc, char *argv[])
 
   fclose (in);
 
-  if(key_get_simple("dat-key", dat_key, 0x10) < 0)
+  if(key_get_simple("dat-key", dat_key, 0x20) < 0)
     fail ("unable to load dat-key.");
   if(key_get_simple("dat-iv", dat_iv, 0x10) < 0)
     fail ("unable to load dat-iv.");
 
-  aes128cbc (dat_key, dat_iv, data, len, data);
+  aes256cbc (dat_key, dat_iv, data, len, data);
   sha1 (data + 32, len - 32, digest);
 
   if (memcmp (data, digest, 20) != 0)
